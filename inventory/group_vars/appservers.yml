@@ -1,0 +1,7 @@
+---
+app_user: quickbite
+app_dir: /opt/quickbite
+app_venv: /opt/quickbite/venv
+app_config_dir: /etc/quickbite
+gunicorn_workers: 2
+flask_env: staging

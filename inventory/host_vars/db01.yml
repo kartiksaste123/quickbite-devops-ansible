@@ -1,0 +1,3 @@
+---
+server_role: "Database server - PostgreSQL"
+postgres_max_connections: 150

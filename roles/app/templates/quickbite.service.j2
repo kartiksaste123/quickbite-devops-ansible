@@ -1,0 +1,16 @@
+# managed by ansible
+[Unit]
+Description=QuickBite food delivery API
+After=network.target
+
+[Service]
+User={{ app_user }}
+Group={{ app_user }}
+WorkingDirectory={{ app_dir }}
+EnvironmentFile={{ app_config_dir }}/quickbite.env
+ExecStart={{ app_venv }}/bin/gunicorn --workers {{ gunicorn_workers }} --bind 0.0.0.0:{{ app_port }} --preload app:app
+Restart=on-failure
+RestartSec=3
+
+[Install]
+WantedBy=multi-user.target

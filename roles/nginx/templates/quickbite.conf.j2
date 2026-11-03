@@ -1,0 +1,30 @@
+# managed by ansible - QuickBite reverse proxy
+upstream quickbite_app {
+{% for host in groups['appservers'] %}
+    server {{ hostvars[host].private_ip }}:{{ app_port }};
+{% endfor %}
+}
+
+server {
+    listen {{ nginx_listen_port }} default_server;
+    server_name {{ nginx_server_name }};
+
+    client_max_body_size {{ nginx_client_max_body_size }};
+    access_log /var/log/nginx/quickbite_access.log;
+    error_log  /var/log/nginx/quickbite_error.log;
+
+    location / {
+        proxy_pass http://quickbite_app;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_connect_timeout 5s;
+        proxy_read_timeout 30s;
+    }
+
+    location /nginx_status {
+        stub_status;
+        allow 127.0.0.1;
+        deny all;
+    }
+}

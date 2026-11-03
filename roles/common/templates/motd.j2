@@ -1,0 +1,6 @@
+------------------------------------------------------------
+ {{ project_name | upper }} ({{ env_name }})
+ Host : {{ inventory_hostname }} ({{ private_ip }})
+ Role : {{ server_role | default('n/a') }}
+ This server is managed by Ansible - manual changes will be overwritten.
+------------------------------------------------------------

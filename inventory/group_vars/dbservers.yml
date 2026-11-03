@@ -1,0 +1,4 @@
+---
+postgres_version: 14
+postgres_listen_addresses: "*"
+postgres_max_connections: 100

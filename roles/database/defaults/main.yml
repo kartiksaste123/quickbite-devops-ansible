@@ -1,0 +1,6 @@
+---
+database_conf_dir: "/etc/postgresql/{{ postgres_version }}/main"
+database_packages:
+  - postgresql
+  - postgresql-contrib
+  - python3-psycopg2

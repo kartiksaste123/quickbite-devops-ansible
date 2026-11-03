@@ -1,0 +1,13 @@
+kartik@devops-lab:~/devops-ansible-assignment$ ansible all -m ping
+web01 | SUCCESS => {
+    "changed": false,
+    "ping": "pong"
+}
+app01 | SUCCESS => {
+    "changed": false,
+    "ping": "pong"
+}
+db01 | SUCCESS => {
+    "changed": false,
+    "ping": "pong"
+}

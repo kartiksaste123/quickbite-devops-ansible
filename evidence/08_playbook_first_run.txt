@@ -1,0 +1,170 @@
+kartik@devops-lab:~/devops-ansible-assignment$ ansible-playbook site.yml
+
+PLAY [Common setup for all servers] ********************************************
+
+TASK [Gathering Facts] *********************************************************
+ok: [app01]
+ok: [db01]
+ok: [web01]
+
+TASK [common : Update apt cache] ***********************************************
+ok: [app01]
+ok: [db01]
+ok: [web01]
+
+TASK [common : Install common packages] ****************************************
+changed: [app01]
+changed: [web01]
+changed: [db01]
+
+TASK [common : Set timezone] ***************************************************
+changed: [web01]
+changed: [app01]
+changed: [db01]
+
+TASK [common : Make sure node_exporter is running (used by Prometheus)] ********
+changed: [db01]
+changed: [app01]
+changed: [web01]
+
+TASK [common : Add login banner] ***********************************************
+[WARNING]: Deprecation warnings can be disabled by setting `deprecation_warnings=False` in ansible.cfg.
+[DEPRECATION WARNING]: INJECT_FACTS_AS_VARS default to `True` is deprecated, top-level facts will not be auto injected after the change. This feature will be removed from ansible-core version 2.24.
+Origin: /workspace/devops-ansible-assignment/inventory/group_vars/all.yml:30:13
+
+28 # servers talk to each other on their private (docker bridge) address,
+29 # ansible_host is only the ssh endpoint used by the control node
+30 private_ip: "{{ ansible_default_ipv4.address }}"
+               ^ column 13
+
+Use `ansible_facts["fact_name"]` (no `ansible_` prefix) instead.
+
+changed: [web01]
+changed: [app01]
+changed: [db01]
+
+PLAY [Configure database server] ***********************************************
+
+TASK [Gathering Facts] *********************************************************
+ok: [db01]
+
+TASK [database : Install PostgreSQL] *******************************************
+changed: [db01]
+
+TASK [database : Start and enable PostgreSQL] **********************************
+changed: [db01]
+
+TASK [database : Configure postgresql.conf] ************************************
+[WARNING]: Module remote_tmp /root/.ansible/tmp did not exist and was created with a mode of 0700, this may cause issues when running as another user. To avoid this, create the remote_tmp dir with the correct permissions manually
+changed: [db01] => (item={'key': 'listen_addresses', 'value': "'*'"})
+changed: [db01] => (item={'key': 'port', 'value': 5432})
+changed: [db01] => (item={'key': 'max_connections', 'value': 150})
+
+TASK [database : Allow app servers to connect (pg_hba.conf)] *******************
+changed: [db01] => (item=app01)
+
+TASK [database : Flush handlers] ***********************************************
+
+RUNNING HANDLER [database : Restart postgresql] ********************************
+changed: [db01]
+
+TASK [database : Create application database user] *****************************
+[WARNING]: Module remote_tmp /var/lib/postgresql/.ansible/tmp did not exist and was created with a mode of 0700, this may cause issues when running as another user. To avoid this, create the remote_tmp dir with the correct permissions manually
+changed: [db01]
+
+TASK [database : Create application database] **********************************
+changed: [db01]
+
+PLAY [Deploy QuickBite application] ********************************************
+
+TASK [Gathering Facts] *********************************************************
+ok: [app01]
+
+TASK [app : Install python packages] *******************************************
+changed: [app01]
+
+TASK [app : Create app user] ***************************************************
+changed: [app01]
+
+TASK [app : Create app directories] ********************************************
+changed: [app01] => (item=/opt/quickbite)
+changed: [app01] => (item=/etc/quickbite)
+
+TASK [app : Copy application code] *********************************************
+changed: [app01]
+
+TASK [app : Install python requirements in a virtualenv] ***********************
+changed: [app01]
+
+TASK [app : Write environment file] ********************************************
+changed: [app01]
+
+TASK [app : Install systemd service] *******************************************
+changed: [app01]
+
+TASK [app : Start and enable QuickBite service] ********************************
+changed: [app01]
+
+TASK [app : Wait for the app port] *********************************************
+ok: [app01]
+
+RUNNING HANDLER [app : Reload systemd] *****************************************
+ok: [app01]
+
+RUNNING HANDLER [app : Restart quickbite] **************************************
+changed: [app01]
+
+PLAY [Configure nginx reverse proxy] *******************************************
+
+TASK [Gathering Facts] *********************************************************
+ok: [web01]
+
+TASK [nginx : Install nginx] ***************************************************
+changed: [web01]
+
+TASK [nginx : Set worker connections in nginx.conf] ****************************
+changed: [web01]
+
+TASK [nginx : Deploy QuickBite site config] ************************************
+changed: [web01]
+
+TASK [nginx : Enable QuickBite site] *******************************************
+changed: [web01]
+
+TASK [nginx : Remove default site] *********************************************
+changed: [web01]
+
+TASK [nginx : Check nginx config] **********************************************
+ok: [web01]
+
+TASK [nginx : Start and enable nginx] ******************************************
+changed: [web01]
+
+RUNNING HANDLER [nginx : Reload nginx] *****************************************
+changed: [web01]
+
+PLAY [Verify the deployment] ***************************************************
+
+TASK [Gathering Facts] *********************************************************
+ok: [web01]
+
+TASK [Check health endpoint through nginx] *************************************
+ok: [web01 -> localhost]
+
+TASK [Get menu through nginx] **************************************************
+ok: [web01 -> localhost]
+
+TASK [Show app response] *******************************************************
+ok: [web01] => {
+    "msg": [
+        "Health : {'database': 'up', 'status': 'ok', 'time': '2026-11-03T20:24:01'}",
+        "Menu items returned: 5",
+        "First item: {'id': 1, 'item': 'Paneer Butter Masala', 'price': 220, 'restaurant': 'Spice Garden'}"
+    ]
+}
+
+PLAY RECAP *********************************************************************
+app01                      : ok=18   changed=13   unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+db01                       : ok=14   changed=11   unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+web01                      : ok=19   changed=11   unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+

@@ -1,0 +1,6 @@
+---
+app_service_name: quickbite
+app_packages:
+  - python3
+  - python3-venv
+  - python3-pip

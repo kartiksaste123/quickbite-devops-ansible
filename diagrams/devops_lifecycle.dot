@@ -1,0 +1,27 @@
+// DevOps lifecycle for the QuickBite food delivery app
+// render: neato -n2 -Tpng devops_lifecycle.dot -o devops_lifecycle.png
+digraph lifecycle {
+  graph [layout=neato, splines=true, fontname="DejaVu Sans", fontsize=18, labelloc=t, pad=0.4,
+         label="DevOps Lifecycle - QuickBite Food Delivery Application\n "];
+  node  [shape=box, style="rounded,filled", fillcolor="#f4f4f4", color="#444444", fontname="DejaVu Sans", fontsize=11, width=2.5, height=1.3];
+  edge  [color="#333333", arrowsize=0.8, penwidth=1.2, fontname="DejaVu Sans", fontsize=10];
+
+  plan    [pos="0,3!",   fillcolor="#e8eef7", label=<<b>1. PLAN</b><br/><br/>Jira (backlog, sprints)<br/>user stories: place order,<br/>track delivery, payments>];
+  code    [pos="3.4,3!", fillcolor="#e8eef7", label=<<b>2. CODE</b><br/><br/>Git + GitHub<br/>feature branches,<br/>pull requests, code review>];
+  build   [pos="6.8,3!", fillcolor="#e8eef7", label=<<b>3. BUILD</b><br/><br/>GitHub Actions / Jenkins<br/>pip install -r requirements<br/>Docker image (optional)>];
+  test    [pos="10.2,3!", fillcolor="#e8eef7", label=<<b>4. TEST</b><br/><br/>pytest (unit tests)<br/>ansible-lint, syntax-check<br/>Selenium / Postman>];
+  release [pos="10.2,0!", fillcolor="#eaf4ea", label=<<b>5. RELEASE</b><br/><br/>Git tags (v1.0.x)<br/>GitHub Releases<br/>approval for production>];
+  deploy  [pos="6.8,0!", fillcolor="#eaf4ea", label=<<b>6. DEPLOY</b><br/><br/>Ansible playbook (site.yml)<br/>roles: common, database,<br/>app, nginx>];
+  operate [pos="3.4,0!", fillcolor="#eaf4ea", label=<<b>7. OPERATE</b><br/><br/>Nginx reverse proxy<br/>Gunicorn + systemd<br/>PostgreSQL>];
+  monitor [pos="0,0!",   fillcolor="#eaf4ea", label=<<b>8. MONITOR</b><br/><br/>Prometheus node_exporter<br/>Grafana dashboards<br/>/health check, nginx logs>];
+
+  plan -> code; code -> build; build -> test;
+  test -> release [label="  tests passed"];
+  release -> deploy; deploy -> operate; operate -> monitor;
+  monitor -> plan [style=dashed, label="feedback  "];
+
+  centre [pos="5.1,1.5!", shape=plaintext, style="", width=4, label=<Continuous Integration: Code - Build - Test<br/>Continuous Delivery: Release - Deploy<br/>Continuous Monitoring: Operate - Monitor<br/><br/><i>bugs and alerts from monitoring go back into Jira</i>>];
+
+  dev [pos="13,2.2!", shape=box, style=filled, fillcolor="#e8eef7", label="Dev stages", width=1.4, height=0.4, fontsize=10];
+  ops [pos="13,1.6!", shape=box, style=filled, fillcolor="#eaf4ea", label="Ops stages", width=1.4, height=0.4, fontsize=10];
+}

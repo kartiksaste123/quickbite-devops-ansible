@@ -1,0 +1,5 @@
+kartik@devops-lab:~/devops-ansible-assignment$ docker ps --filter "ancestor=quickbite-node:22.04" --format "table {{.Names}}\t{{.Image}}\t{{.Status}}\t{{.Ports}}"
+NAMES     IMAGE                  STATUS         PORTS
+db01      quickbite-node:22.04   Up 5 seconds   0.0.0.0:2223->22/tcp, :::2223->22/tcp
+app01     quickbite-node:22.04   Up 5 seconds   0.0.0.0:2222->22/tcp, :::2222->22/tcp
+web01     quickbite-node:22.04   Up 6 seconds   0.0.0.0:2221->22/tcp, :::2221->22/tcp, 0.0.0.0:8088->80/tcp, :::8088->80/tcp

@@ -1,0 +1,3 @@
+---
+server_role: "Application server - QuickBite order API (Flask + Gunicorn)"
+gunicorn_workers: 3

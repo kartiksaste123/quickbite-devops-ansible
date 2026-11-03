@@ -1,0 +1,35 @@
+// Deployment architecture of QuickBite (what site.yml sets up)
+digraph architecture {
+  graph [rankdir=LR, fontname="DejaVu Sans", fontsize=18, labelloc=t, pad=0.4, nodesep=0.5, ranksep=0.9,
+         label="QuickBite - Deployment Architecture (staging)\n "];
+  node  [shape=box, style="filled", fillcolor="#f4f4f4", color="#444444", fontname="DejaVu Sans", fontsize=11];
+  edge  [color="#333333", fontname="DejaVu Sans", fontsize=10];
+
+  users [label="Customers\n(web / mobile app)", shape=ellipse, fillcolor="#ffffff"];
+
+  subgraph cluster_servers {
+    label="Managed nodes (Ubuntu 22.04)  -  inventory group: foodapp"; fontsize=12; color="#777777"; style=dashed;
+    web [label=<<b>web01</b>  [webservers]<br/>Nginx reverse proxy :80<br/>node_exporter :9100>, fillcolor="#e8eef7"];
+    app [label=<<b>app01</b>  [appservers]<br/>QuickBite API (Flask)<br/>Gunicorn :5000, systemd<br/>node_exporter :9100>, fillcolor="#e8eef7"];
+    db  [label=<<b>db01</b>  [dbservers]<br/>PostgreSQL 14 :5432<br/>quickbite_db<br/>node_exporter :9100>, fillcolor="#e8eef7"];
+  }
+
+  ansible [label=<<b>Ansible control node</b><br/>ansible.cfg, inventory/<br/>site.yml + roles>, fillcolor="#eaf4ea"];
+  github  [label=<<b>GitHub</b><br/>repo + Actions CI<br/>(lint, syntax, pytest)>, fillcolor="#eaf4ea"];
+  mon     [label=<<b>Monitoring</b><br/>Prometheus + Grafana<br/>/health endpoint>, fillcolor="#fdf3e3"];
+
+  users -> web [label="HTTP"];
+  web -> app [label="proxy_pass"];
+  app -> db  [label="SQL (psycopg2)"];
+
+  github -> ansible [label="git pull", style=dashed];
+  ansible -> web [label="SSH", style=dashed, color="#2e7d32"];
+  ansible -> app [label="SSH", style=dashed, color="#2e7d32"];
+  ansible -> db  [label="SSH", style=dashed, color="#2e7d32"];
+
+  mon -> web [label="scrape :9100", style=dotted, dir=back];
+  mon -> app [style=dotted, dir=back];
+  mon -> db  [style=dotted, dir=back];
+
+  {rank=same; github; ansible;}
+}

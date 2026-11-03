@@ -1,0 +1,56 @@
+---
+# QuickBite food delivery - main playbook
+# usage: ansible-playbook site.yml   (or with --tags nginx / app / database / verify)
+
+- name: Common setup for all servers
+  hosts: foodapp
+  roles:
+    - role: common
+      tags: common
+
+- name: Configure database server
+  hosts: dbservers
+  roles:
+    - role: database
+      tags: database
+
+- name: Deploy QuickBite application
+  hosts: appservers
+  roles:
+    - role: app
+      tags: app
+
+- name: Configure nginx reverse proxy
+  hosts: webservers
+  roles:
+    - role: nginx
+      tags: nginx
+
+- name: Verify the deployment
+  hosts: webservers
+  become: false
+  tags: verify
+  tasks:
+    - name: Check health endpoint through nginx
+      ansible.builtin.uri:
+        url: "http://{{ ansible_host }}:{{ http_port_public }}/health"
+        return_content: true
+      register: health
+      delegate_to: localhost
+      until: health.status == 200
+      retries: 5
+      delay: 3
+
+    - name: Get menu through nginx
+      ansible.builtin.uri:
+        url: "http://{{ ansible_host }}:{{ http_port_public }}/api/menu"
+        return_content: true
+      register: menu
+      delegate_to: localhost
+
+    - name: Show app response
+      ansible.builtin.debug:
+        msg:
+          - "Health : {{ health.json }}"
+          - "Menu items returned: {{ menu.json | length }}"
+          - "First item: {{ menu.json[0] }}"

@@ -1,0 +1,16 @@
+kartik@devops-lab:~/devops-ansible-assignment$ ansible appservers -a "systemctl is-active quickbite"
+app01 | CHANGED | rc=0 >>
+active
+kartik@devops-lab:~/devops-ansible-assignment$ ansible webservers -a "systemctl is-active nginx"
+web01 | CHANGED | rc=0 >>
+active
+kartik@devops-lab:~/devops-ansible-assignment$ ansible dbservers -a "systemctl is-active postgresql"
+db01 | CHANGED | rc=0 >>
+active
+kartik@devops-lab:~/devops-ansible-assignment$ ansible foodapp -m shell -a "curl -s localhost:9100/metrics | grep -c ^node_"
+db01 | CHANGED | rc=0 >>
+1047
+web01 | CHANGED | rc=0 >>
+1031
+app01 | CHANGED | rc=0 >>
+1031

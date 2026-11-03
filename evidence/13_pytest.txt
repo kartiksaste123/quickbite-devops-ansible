@@ -1,0 +1,12 @@
+kartik@devops-lab:~/devops-ansible-assignment$ python -m pytest -v tests/
+============================= test session starts ==============================
+platform linux -- Python 3.13.5, pytest-9.2.0, pluggy-1.7.0 -- /workspace/devops-ansible-assignment/.venv/bin/python
+cachedir: .pytest_cache
+rootdir: /workspace/devops-ansible-assignment
+plugins: platformdirs-4.14.3
+collecting ... collected 2 items
+
+tests/test_app.py::test_index PASSED                                     [ 50%]
+tests/test_app.py::test_health_without_db PASSED                         [100%]
+
+============================== 2 passed in 0.09s ===============================

@@ -1,0 +1,3 @@
+kartik@devops-lab:~/devops-ansible-assignment$ ansible-playbook site.yml --syntax-check
+
+playbook: site.yml

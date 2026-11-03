@@ -1,0 +1,10 @@
+kartik@devops-lab:~/devops-ansible-assignment$ ansible-inventory --graph
+@all:
+  |--@ungrouped:
+  |--@foodapp:
+  |  |--@webservers:
+  |  |  |--web01
+  |  |--@appservers:
+  |  |  |--app01
+  |  |--@dbservers:
+  |  |  |--db01

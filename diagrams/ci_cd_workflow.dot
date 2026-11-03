@@ -1,0 +1,22 @@
+// CI/CD workflow used for QuickBite
+digraph workflow {
+  graph [rankdir=LR, fontname="DejaVu Sans", fontsize=18, labelloc=t, pad=0.4, nodesep=0.4, ranksep=0.5,
+         label="QuickBite - CI/CD Workflow\n "];
+  node  [shape=box, style="rounded,filled", fillcolor="#f4f4f4", color="#444444", fontname="DejaVu Sans", fontsize=11, height=0.9];
+  edge  [color="#333333", fontname="DejaVu Sans", fontsize=10];
+
+  dev    [label="Developer\ncommits code", shape=ellipse, style=filled, fillcolor="#ffffff"];
+  gh     [label="GitHub\n(pull request)"];
+  ci     [label="GitHub Actions\nansible-lint\nsyntax-check\npytest", fillcolor="#e8eef7"];
+  merge  [label="Merge to main\n+ git tag", fillcolor="#e8eef7"];
+  stage  [label="ansible-playbook site.yml\n(staging inventory)", fillcolor="#eaf4ea"];
+  verify [label="Verify play\n/health + /api/menu", fillcolor="#eaf4ea"];
+  prod   [label="Deploy to production\n(same playbook,\nprod inventory)", fillcolor="#eaf4ea"];
+  mon    [label="Monitor\nPrometheus / Grafana", fillcolor="#fdf3e3"];
+
+  dev -> gh -> ci;
+  ci -> merge [label="pass"];
+  ci -> dev [label="fail - fix", style=dashed, constraint=false];
+  merge -> stage -> verify -> prod -> mon;
+  mon -> dev [label="issues / alerts", style=dashed, constraint=false];
+}

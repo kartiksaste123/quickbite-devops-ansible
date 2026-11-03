@@ -1,0 +1,10 @@
+.venv/
+__pycache__/
+*.pyc
+*.retry
+# never commit ssh keys
+*_key
+*.pem
+id_*
+lab/ansible_key.pub
+.pytest_cache/

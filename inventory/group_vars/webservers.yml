@@ -1,0 +1,5 @@
+---
+nginx_server_name: quickbite.local
+nginx_listen_port: 80
+nginx_worker_connections: 1024
+nginx_client_max_body_size: 2m

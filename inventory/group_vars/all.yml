@@ -1,0 +1,30 @@
+---
+# common settings for every host
+project_name: quickbite
+timezone: Asia/Kolkata
+
+ansible_user: ansible
+ansible_ssh_private_key_file: ~/.ssh/quickbite/ansible_key
+
+common_packages:
+  - curl
+  - vim
+  - htop
+  - net-tools
+  - tzdata
+  - prometheus-node-exporter
+
+# ports used by the different tiers
+app_port: 5000
+db_port: 5432
+node_exporter_port: 9100
+
+# database details (shared by the app and db roles)
+db_name: quickbite_db
+db_user: quickbite
+# lab password only - in a real setup this goes into ansible-vault
+db_password: "Qb_lab_2026"
+
+# servers talk to each other on their private (docker bridge) address,
+# ansible_host is only the ssh endpoint used by the control node
+private_ip: "{{ ansible_default_ipv4.address }}"

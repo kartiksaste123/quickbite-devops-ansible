@@ -1,0 +1,29 @@
+kartik@devops-lab:~/devops-ansible-assignment$ ansible-inventory --host app01 --yaml
+ansible_host: 127.0.0.1
+ansible_port: 2222
+ansible_ssh_private_key_file: ~/.ssh/quickbite/ansible_key
+ansible_user: ansible
+app_config_dir: /etc/quickbite
+app_dir: /opt/quickbite
+app_port: 5000
+app_user: quickbite
+app_venv: /opt/quickbite/venv
+common_packages:
+- curl
+- vim
+- htop
+- net-tools
+- tzdata
+- prometheus-node-exporter
+db_name: quickbite_db
+db_password: Qb_lab_2026
+db_port: 5432
+db_user: quickbite
+env_name: staging
+flask_env: staging
+gunicorn_workers: 3
+node_exporter_port: 9100
+private_ip: '{{ ansible_default_ipv4.address }}'
+project_name: quickbite
+server_role: Application server - QuickBite order API (Flask + Gunicorn)
+timezone: Asia/Kolkata

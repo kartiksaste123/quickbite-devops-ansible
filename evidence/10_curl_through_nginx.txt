@@ -1,0 +1,53 @@
+kartik@devops-lab:~/devops-ansible-assignment$ curl -s http://127.0.0.1:8088/; echo
+{"app":"QuickBite Food Delivery API","env":"staging","served_by":"app01"}
+
+kartik@devops-lab:~/devops-ansible-assignment$ curl -s http://127.0.0.1:8088/health; echo
+{"database":"up","status":"ok","time":"2026-11-03T20:25:46"}
+
+kartik@devops-lab:~/devops-ansible-assignment$ curl -s http://127.0.0.1:8088/api/menu | python3 -m json.tool
+[
+    {
+        "id": 1,
+        "item": "Paneer Butter Masala",
+        "price": 220,
+        "restaurant": "Spice Garden"
+    },
+    {
+        "id": 2,
+        "item": "Butter Naan",
+        "price": 40,
+        "restaurant": "Spice Garden"
+    },
+    {
+        "id": 3,
+        "item": "Chicken Biryani",
+        "price": 260,
+        "restaurant": "Pune Biryani House"
+    },
+    {
+        "id": 4,
+        "item": "Veg Biryani",
+        "price": 190,
+        "restaurant": "Pune Biryani House"
+    },
+    {
+        "id": 5,
+        "item": "Masala Dosa",
+        "price": 90,
+        "restaurant": "Daily Dosa"
+    }
+]
+kartik@devops-lab:~/devops-ansible-assignment$ curl -s -X POST -H 'Content-Type: application/json' -d '{"customer": "Kartik", "item_id": 3, "qty": 2}' http://127.0.0.1:8088/api/orders; echo
+{"order_id":2,"status":"PLACED"}
+
+kartik@devops-lab:~/devops-ansible-assignment$ curl -s http://127.0.0.1:8088/api/orders; echo
+[{"customer":"Kartik","item":"Chicken Biryani","order_id":1,"qty":2,"status":"PLACED"},{"customer":"Kartik","item":"Chicken Biryani","order_id":2,"qty":2,"status":"PLACED"}]
+
+kartik@devops-lab:~/devops-ansible-assignment$ curl -sI http://127.0.0.1:8088/health
+HTTP/1.1 200 OK
+Server: nginx/1.18.0 (Ubuntu)
+Date: Tue, 03 Nov 2026 14:55:46 GMT
+Content-Type: application/json
+Content-Length: 61
+Connection: keep-alive
+

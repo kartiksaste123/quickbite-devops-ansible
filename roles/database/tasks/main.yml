@@ -1,0 +1,53 @@
+---
+- name: Install PostgreSQL
+  ansible.builtin.apt:
+    name: "{{ database_packages }}"
+    state: present
+
+- name: Start and enable PostgreSQL
+  ansible.builtin.service:
+    name: postgresql
+    state: started
+    enabled: true
+
+- name: Configure postgresql.conf
+  ansible.builtin.lineinfile:
+    path: "{{ database_conf_dir }}/postgresql.conf"
+    regexp: "^#?{{ item.key }} ="
+    line: "{{ item.key }} = {{ item.value }}"
+  loop:
+    - { key: listen_addresses, value: "'{{ postgres_listen_addresses }}'" }
+    - { key: port, value: "{{ db_port }}" }
+    - { key: max_connections, value: "{{ postgres_max_connections }}" }
+  notify: Restart postgresql
+
+- name: Allow app servers to connect (pg_hba.conf)
+  community.postgresql.postgresql_pg_hba:
+    dest: "{{ database_conf_dir }}/pg_hba.conf"
+    contype: host
+    databases: "{{ db_name }}"
+    users: "{{ db_user }}"
+    source: "{{ hostvars[item].private_ip }}/32"
+    method: scram-sha-256
+  loop: "{{ groups['appservers'] }}"
+  notify: Restart postgresql
+
+# restart now (if needed) so the app can connect in the next play
+- name: Flush handlers
+  ansible.builtin.meta: flush_handlers
+
+- name: Create application database user
+  community.postgresql.postgresql_user:
+    name: "{{ db_user }}"
+    password: "{{ db_password }}"
+  become: true
+  become_user: postgres
+  no_log: true
+
+- name: Create application database
+  community.postgresql.postgresql_db:
+    name: "{{ db_name }}"
+    owner: "{{ db_user }}"
+    encoding: UTF-8
+  become: true
+  become_user: postgres
