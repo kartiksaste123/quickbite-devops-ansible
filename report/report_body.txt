@@ -162,6 +162,8 @@ In this assignment, I took a food delivery app as a real-world scenario, planned
 
 The playbook passed ansible-lint with the production profile, ran without failures, gave changed=0 on the second run, and fixed a manual change by itself. What I learned most is that writing the playbook was only half the job. The other half was making it safe to run again and again, which is what makes a team trust automation. Next, I would add Ansible Vault, a production inventory, an automatic deploy job, and real Prometheus and Grafana servers.
 
-GitHub repository: https://github.com/kartiksaste123/quickbite-devops-ansible. Demo video: <Demo video link>.
+GitHub repository: https://github.com/kartiksaste123/quickbite-devops-ansible
+
+Demo video: <Demo video link>
 
 References

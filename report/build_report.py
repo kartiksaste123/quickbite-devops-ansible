@@ -9,7 +9,9 @@ from docx.oxml import OxmlElement
 
 ROOT = '/workspace/devops-ansible-assignment'
 IMG = ROOT + '/report/img/'
-OUT = ROOT + '/report/DevOps_Ansible_Assignment_Kartik_Saste.docx'
+OUT = os.environ.get('REPORT_OUT', ROOT + '/report/DevOps_Ansible_Assignment_Kartik_Saste.docx')
+# demo video link: pass VIDEO_URL=<link> when rebuilding, otherwise a placeholder is used
+VIDEO = os.environ.get('VIDEO_URL', '').strip() or '<Demo video link>'
 BODY_TXT = ROOT + '/report/report_body.txt'
 
 def rf(path):
@@ -189,15 +191,16 @@ def centre(text, size=12, bold=False, before=0, after=6):
     return p
 
 centre('MIT Academy of Engineering', 14, True, before=60, after=4)
-centre('Course: DevOps', 12, after=70)
+centre('Course: DevOps', 12, after=4)
+centre('Internal Assessment 1', 12, True, after=66)
 centre('DevOps Case Study and Ansible Automation', 20, True, after=10)
 centre('Case Study: QuickBite Food Delivery Application', 13, after=90)
 
-info = [('Name', 'Kartik Saste'), ('PRN / Roll No.', '______________________'),
+info = [('Name', 'Kartik Saste'), ('Assessment', 'Internal Assessment 1'),
         ('Course', 'DevOps'), ('Institute', 'MIT Academy of Engineering'),
         ('Date', 'November 2026'),
         ('GitHub repository', 'https://github.com/kartiksaste123/quickbite-devops-ansible'),
-        ('Demo video', '<Demo video link>')]
+        ('Demo video', VIDEO)]
 t = doc.add_table(rows=0, cols=2)
 t.alignment = WD_TABLE_ALIGNMENT.CENTER
 for k, v in info:
@@ -205,9 +208,14 @@ for k, v in info:
     cells[0].text = ''; cells[1].text = ''
     r = cells[0].paragraphs[0].add_run(k + ':'); r.font.size = Pt(12)
     r = cells[1].paragraphs[0].add_run(v); r.font.size = Pt(12)
-    cells[0].width = Inches(2.0); cells[1].width = Inches(3.2)
+    pass
     for c in cells:
         c.paragraphs[0].paragraph_format.space_after = Pt(8)
+t.autofit = False
+for col, w in zip(t.columns, (Inches(1.7), Inches(4.4))):
+    col.width = w
+    for c in col.cells:
+        c.width = w
 doc.add_page_break()
 
 # ================= 1 =================
@@ -352,7 +360,8 @@ P('I also saw two warnings that did not cause failures. One is a deprecation war
 H1('10. Conclusion')
 P('In this assignment, I took a food delivery app as a real-world scenario, planned its full DevOps lifecycle, identified the development, testing, deployment, and monitoring stages, and designed a CI/CD workflow, part of which already runs in GitHub Actions. I prepared an inventory with tier groups, a parent group, and both group and host variables, and wrote a playbook with four reusable roles that sets up PostgreSQL, the Flask app with Gunicorn, and Nginx on three servers with one command.')
 P('The playbook passed ansible-lint with the production profile, ran without failures, gave changed=0 on the second run, and fixed a manual change by itself. What I learned most is that writing the playbook was only half the job. The other half was making it safe to run again and again, which is what makes a team trust automation. Next, I would add Ansible Vault, a production inventory, an automatic deploy job, and real Prometheus and Grafana servers.')
-P('GitHub repository: https://github.com/kartiksaste123/quickbite-devops-ansible. Demo video: <Demo video link>.')
+P('GitHub repository: https://github.com/kartiksaste123/quickbite-devops-ansible')
+P('Demo video: ' + VIDEO)
 
 # ================= refs =================
 H1('References')
