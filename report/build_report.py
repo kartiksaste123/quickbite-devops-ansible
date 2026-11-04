@@ -191,13 +191,13 @@ def centre(text, size=12, bold=False, before=0, after=6):
     return p
 
 centre('MIT Academy of Engineering', 14, True, before=60, after=4)
-centre('Course: DevOps', 12, after=4)
+centre('Course: Cloud Computing', 12, after=4)
 centre('Internal Assessment 1', 12, True, after=66)
 centre('DevOps Case Study and Ansible Automation', 20, True, after=10)
 centre('Case Study: QuickBite Food Delivery Application', 13, after=90)
 
 info = [('Name', 'Kartik Saste'), ('Assessment', 'Internal Assessment 1'),
-        ('Course', 'DevOps'), ('Institute', 'MIT Academy of Engineering'),
+        ('Course', 'Cloud Computing'), ('Institute', 'MIT Academy of Engineering'),
         ('Date', 'November 2026'),
         ('GitHub repository', 'https://github.com/kartiksaste123/quickbite-devops-ansible'),
         ('Demo video', VIDEO)]

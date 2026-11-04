@@ -1,7 +1,7 @@
 # QuickBite - DevOps Case Study and Ansible Automation
 
 Name: Kartik Saste
-Subject: DevOps - Case Study & Ansible Automation Assignment (Internal Assessment 1)
+Subject: Cloud Computing - DevOps Case Study & Ansible Automation Assignment (Internal Assessment 1)
 
 ## Project overview
 
